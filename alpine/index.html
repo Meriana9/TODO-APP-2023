@@ -10,7 +10,13 @@
     <section
       class="todoapp"
       x-data="{
-      tasks: JSON.parse(localStorage.tasks)
+      tasks: JSON.parse(localStorage.tasks),
+      newTaskContent: null,
+      addTask () {
+        this.tasks.unshift({id: new Date().valueOf(), content:this.newTaskContent, completed: false}); 
+        localStorage.tasks = JSON.stringify(this.tasks); 
+        this.newTaskContent = null;
+      }
     }"
     >
       <header class="header">
@@ -19,6 +25,8 @@
           class="new-todo"
           placeholder="What needs to be done?"
           autofocus
+          x-model="newTaskContent"
+          @keyup.enter="addTask"
         />
       </header>
       <section class="main">
@@ -26,9 +34,13 @@
         <label for="toggle-all">Mark all as complete</label>
         <ul class="todo-list">
           <template x-for="task in tasks">
-            <li x-bind:class="task.completed ? 'completed' : '' ">
+            <li :class="task.completed ? 'completed' : ''">
               <div class="view">
-                <input class="toggle" type="checkbox" x-model="task.completed" />
+                <input
+                  class="toggle"
+                  type="checkbox"
+                  x-model="task.completed"
+                />
                 <label x-text="task.content"></label>
                 <button class="destroy"></button>
               </div>
